@@ -1,0 +1,154 @@
+---
+title: Draft paper on collecting vegetation indices using citizen science
+author:
+  - name: R. Willem Vervoort
+    email: willem.vervoort@sydney.edu.au
+    affiliation: a
+    footnote: Corresponding Author
+  - name: Dasapta Erwin Irawan
+    email: dasaptaerwin@gmail.com
+    affiliation: b
+  - name: Gene Melzack
+    email: gene.melzack@sydney.edu.au
+    affiliation: c
+address:
+  - code: a
+    address: The University of Sydney, Department, Street, City, State, Zip
+  - code: b
+    address: ITB, Department, Street, City, State, Zip
+  - code: c
+    address: The University of Sydney Library, Department, Street, City, State, Zip
+abstract: |
+  Understanding the spatial and temporal variation in primary production can identify variation in ecological response related to climate and landscape. With mobile phone cameras now easily available, this opens an opportunity to use citizen science to record primary production from vegetation images. 
+
+  The objective of this study is to demonstrate how mobile phone images can be quickly analysed for primary production and can give inside in spatial variation of ecological response.
+  
+  Participants in an open data workshop took mobile phone imagery of local vegetation and the resulting images were stored in an open data project folder. The images were analysed and used to quantify vegetation indices of primary production, which was plotted in space.
+  
+  The results indicate a wide variation of vegetation indices, even across a small area. The process of taking images, uploading, sharing and analysis was rapid using basic open data science tools.
+  
+  Mobile phones can be used by inexperienced operators to quickly map vegetation indices in an area.
+
+bibliography: OpenScience.bib
+output: rticles::elsevier_article
+---
+
+
+Introduction
+==========
+
+The evolving nature of science publishing has lead to a strong growth in open science [@irawan_review_2017] and citizen science efforts [@dickinson_citizen_2010]. With this comes a need to create an understanding of open science and the potentials of open science for researchers in different fields. To assist with this a workshop was organised at Institut Teknologi Bandung (ITB) in collaboration with the University of Sydney (USYD) [@irawan_workshop_2018] to demonstrate different aspect of open science and open science publishing.
+
+During the workshop, an example dataset was used based on older research [@vervoort_palaeochannels_2006]. During the workshop , participants were introduced in components, such as defining metadata, creating spatial and netcdfdata, and recording workflows. During the last day of the workshop, new data were generated using vegetation photographs from mobile phones in the field to allow the participants to practice skills learned.
+
+There is considerable interest globally in remotely mapping vegetation due to its strong relationship with ecosystem health and variation in drivers of vegetation productivity [@huete_modis_2011; @rohde_global_2017]. Ratios of colour bands in vegetation photographs have been shown to be highly correlated to gross primary production [@moore_treegrass_2017], and this therefore creates opportunities for rapid local mapping of vegetation growth and condition. 
+
+The objective of this paper is to demonstrate how the collected data can be easily summarised and a draft paper written using Rmarkdown and the package `rticles`.
+
+Methods
+==========
+
+## Data collection
+Using mobile phones, data were collected by the participants at several locations on a field site in Bandung, by simply taking photos of the existing vegetation. These photos were downloaded from the phones and collected in a data folder on
+[the project Google drive storage](https://drive.google.com/drive/folders/1jgMlC3NbL_7dFVb29AjNflgxqPj6LLMf?usp=sharing). 
+
+## Data processing
+
+Metadata were extracted from the photos using the exif program, using the R package `exifr`. This focussed specifically on the latitude and longitude information as this could be used for further mapping. However, other metadata, such as cameratype and time of collection, can also easily be extracted.
+
+Using the package `imager` in R, the image colour bands were extracted from the photos and following @moore_treegrass_2017 the ratio (GCC) of the green band (G) over the sum of the red (R) and blue (B) bands was calculated:
+
+/begin{equation}
+  GCC = /frac{G}{(R + B)}
+    /label{eqn:model}
+/end{equation}
+ 
+
+Results
+==========
+
+```{r setup, echo = F, message = F, warning = F}
+# Here we need to point to directory where the data is, otherwise R will 
+# look in the directory where the document is generated
+knitr::opts_knit$set(root.dir =  "C:/Users/rver4657/Google Drive/ITB_Usyd_Project2017/workshop_opendata/OriginalDataFolder")
+
+```
+
+
+
+```{r packages, echo=F, message=F, warning=F}
+# call relevant package
+library(exifr)
+library(imager)
+library(tidyverse)
+```
+
+Using Rmarkdown, we can run all the analysis in the background and not show this in the paper. However the workflow is still recorded in the code blocks in the "Rmd" file that generates the document. This means the analysis is still repeatable even though this is not directly visible in the article.
+
+```{r generate, echo=F}
+
+files <- list.files(path = "FieldDataDay4", 
+                    pattern = "*.jpg")
+dat <- read_exif(path = paste("FieldDataDay4/",
+                              files[1:10],sep=""))
+
+Store <- rep(0,length(files[1:10]))
+
+for (i in 1:length(files[1:10])) {
+  our_image <- 
+    load.image(paste("FieldDataDay4/",
+                              files[i],sep=""))
+
+  image_df <- as.data.frame(our_image)
+  image_df <- mutate(image_df,
+                     channel=factor(cc,
+                                    labels=c('R','G','B')))
+  # spread
+  image_df2 <- image_df %>% 
+      mutate(cc = NULL) %>%
+      spread(key = channel, value = value)
+  # mutate
+  image_df3 <- image_df2 %>%
+    mutate(ratio = R/(R+B))
+  # calculate the mean
+  avg_ratio <- mean(image_df3$ratio, na.rm=T)
+  # Store
+  Store[i] <-round(avg_ratio,2)
+}
+plotdat <- data.frame(Latitude = dat$GPSLatitude,
+                      Longitude = dat$GPSLongitude,
+                      GCC = Store)
+
+```
+
+As a first result we can show a table of the result with the associated latitudes and longitudes. This can easily be done using `pander` which creates nice tables. This shows that there is quite a range of variability in the data.
+
+
+```{r showtable, echo =F, message = F}
+require(pander)
+pander(plotdat, caption="Table 1 Overview of first 10 collected data and GCC values")
+```
+
+
+```{r plot_data, echo=F, fig.cap =  "Plot of the collected data by latitude and longitude"}
+# now plot values of Store
+p <- ggplot(plotdat, aes(x=Longitude, y = Latitude)) +
+  geom_point(aes(colour=GCC, size=GCC), alpha = 0.4)
+p
+```
+
+From the plot we can see that there are two points at one location, and several points at a second locations. Overall the variation in GCC is between 0.5 and 0.7. Some of the points are so close together that they are simply overlapping.
+
+
+Discussion and conclusions
+==========
+
+While there are many different ways to publish research. Open Science offers new opportunities to make data and research available to the wider public. Rmarkdown in combination with the package `rticles` allows for efficient recording of workflows and paper writing.
+
+This paper has demonstrated that using existing tools it is fairly simple to produce a draft paper that includes the overall workflow within the document.
+
+It also demonstrates that using mobile phone photography it is easy to collect a large amount of data using inexperienced (citizen science) type data collection and to quickly summarize this data.
+
+
+References {#references .unnumbered}
+==========

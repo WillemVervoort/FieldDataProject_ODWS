@@ -66,7 +66,7 @@
 \hypersetup{breaklinks=true,
             bookmarks=true,
             pdfauthor={},
-            pdftitle={Draft paper on collecting vegetation indices using citizen science},
+            pdftitle={Draft paper demo vegetation indices},
             colorlinks=true,
             urlcolor=blue,
             linkcolor=magenta,
@@ -86,7 +86,7 @@
 \begin{document}
 \begin{frontmatter}
 
-  \title{Draft paper on collecting vegetation indices using citizen science}
+  \title{Draft paper demo vegetation indices}
     \author[a]{R. Willem Vervoort\corref{c1}}
    \ead{willem.vervoort@sydney.edu.au} 
    \cortext[c1]{Corresponding Author}
@@ -96,9 +96,12 @@
     \author[c]{Gene Melzack}
    \ead{gene.melzack@sydney.edu.au} 
   
-      \address[a]{The University of Sydney, Department, Street, City, State, Zip}
-    \address[b]{ITB, Department, Street, City, State, Zip}
-    \address[c]{The University of Sydney Library, Department, Street, City, State, Zip}
+      \address[a]{Sydney Institute of Agriculture, The University of Sydney, NSW 2006}
+    \address[b]{Applied Geology Research Group, Faculty of Earth Sciences and
+Technology, Institut Teknologi Bandung, Jl. Ganesa No.10, Lb. Siliwangi,
+Coblong, Kota Bandung, Jawa Barat 40132, Indonesia}
+    \address[c]{Research Data Team, The University of Sydney Library, The University of
+Sydney, NSW 2006}
   
   \begin{abstract}
   Understanding the spatial and temporal variation in primary production
@@ -107,18 +110,19 @@
   opportunity to use citizen science to record primary production from
   vegetation images.
   
-  The objective of this study is to demonstrate how mobile phone images
-  can be quickly analysed for primary production and can give inside in
-  spatial variation of ecological response.
+  This study demonstrates how mobile phone images can be quickly analysed
+  for primary production and can give inside in spatial variation of
+  ecological response.
   
   Participants in an open data workshop took mobile phone imagery of local
   vegetation and the resulting images were stored in an open data project
-  folder. The images were analysed and used to quantify vegetation indices
-  of primary production, which was plotted in space.
+  folder. The analysis calculated he ratio of the green channel and the
+  sum of the red and blue channel from mobile phone images of vegetation.
   
-  The results indicate a wide variation of vegetation indices, even across
+  The results rapid mapping of vegetation vigour and a wide variety across
   a small area. The process of taking images, uploading, sharing and
-  analysis was rapid using basic open data science tools.
+  analysis was rapid using basic open data science tools including the
+  package \texttt{rticles}.
   
   Mobile phones can be used by inexperienced operators to quickly map
   vegetation indices in an area.
@@ -154,9 +158,10 @@ been shown to be highly correlated to gross primary production (Moore et
 al. 2017), and this therefore creates opportunities for rapid local
 mapping of vegetation growth and condition.
 
-The objective of this paper is to demonstrate how the collected data can
-be easily summarised and a draft paper written using Rmarkdown and the
-package \texttt{rticles}.
+The objective of this paper is to demonstrate how data can be rapidly
+collected using mobile phones and the collected data can be easily
+summarised and a draft paper written using Rmarkdown and the package
+\texttt{rticles}.
 
 \section{Methods}\label{methods}
 
@@ -182,8 +187,7 @@ extracted from the photos and following Moore et al. (2017) the ratio
 (GCC) of the green band (G) over the sum of the red (R) and blue (B)
 bands was calculated:
 
-/begin\{equation\} GCC = /frac\{G\}\{(R + B)\} /label\{eqn:model\}
-/end\{equation\}
+\(GCC = \frac{G}{(R + B)}\)
 
 \section{Results}\label{results}
 
@@ -198,105 +202,153 @@ latitudes and longitudes. This can easily be done using \texttt{pander}
 which creates nice tables. This shows that there is quite a range of
 variability in the data.
 
-\begin{longtable}[]{@{}ccc@{}}
-\caption{Table 1 Overview of first 10 collected data and GCC
-values}\tabularnewline
+\begin{longtable}[]{@{}cccc@{}}
+\caption{Table 1 Overview of first 15 collected data points and GCC
+values for which Latitude and Longitude data are
+available}\tabularnewline
 \toprule
-\begin{minipage}[b]{0.14\columnwidth}\centering\strut
+\begin{minipage}[b]{0.11\columnwidth}\centering\strut
+~\strut
+\end{minipage} & \begin{minipage}[b]{0.14\columnwidth}\centering\strut
 Latitude\strut
 \end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\centering\strut
 Longitude\strut
-\end{minipage} & \begin{minipage}[b]{0.08\columnwidth}\centering\strut
+\end{minipage} & \begin{minipage}[b]{0.07\columnwidth}\centering\strut
 GCC\strut
 \end{minipage}\tabularnewline
 \midrule
 \endfirsthead
 \toprule
-\begin{minipage}[b]{0.14\columnwidth}\centering\strut
+\begin{minipage}[b]{0.11\columnwidth}\centering\strut
+~\strut
+\end{minipage} & \begin{minipage}[b]{0.14\columnwidth}\centering\strut
 Latitude\strut
 \end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\centering\strut
 Longitude\strut
-\end{minipage} & \begin{minipage}[b]{0.08\columnwidth}\centering\strut
+\end{minipage} & \begin{minipage}[b]{0.07\columnwidth}\centering\strut
 GCC\strut
 \end{minipage}\tabularnewline
 \midrule
 \endhead
-\begin{minipage}[t]{0.14\columnwidth}\centering\strut
-NA\strut
-\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
-NA\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering\strut
-0.58\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\centering\strut
-NA\strut
-\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
-NA\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering\strut
-0.6\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\centering\strut
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{3}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
 -6.888\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
 107.6\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
 0.53\strut
 \end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\centering\strut
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{4}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
 -6.888\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
 107.6\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
 0.59\strut
 \end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\centering\strut
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{5}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
 -6.888\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
 107.6\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
 0.53\strut
 \end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\centering\strut
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{6}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
 -6.888\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
 107.6\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
 0.53\strut
 \end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\centering\strut
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{7}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
 -6.888\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
 107.6\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
 0.53\strut
 \end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\centering\strut
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{8}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
 -6.888\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
 107.6\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
 0.53\strut
 \end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\centering\strut
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{9}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
 -6.888\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
 107.6\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
 0.56\strut
 \end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\centering\strut
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{10}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
 -6.888\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
 107.6\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
 0.51\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{11}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
+-6.888\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
+107.6\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
+0.5\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{13}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
+-6.888\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
+107.6\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
+0.55\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{14}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
+-6.889\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
+107.6\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
+0.52\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.11\columnwidth}\centering\strut
+\textbf{15}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\centering\strut
+-6.889\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering\strut
+107.6\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering\strut
+0.52\strut
 \end{minipage}\tabularnewline
 \bottomrule
 \end{longtable}
 
-\begin{verbatim}
-## Warning: Removed 2 rows containing missing values (geom_point).
-\end{verbatim}
+Some data are not shown, as people did not have their location available
+on the mobile phone and this means there is no latitude and longitude
+metadata. This are 33 data points with missing data.
+
+The average \textbf{GCC} value for all data is 0.55, while for the data
+set that does not include the data with missing location data, the
+average \textbf{GCC} value is 0.54. This suggests that there is little
+effect of omitting the data.
 
 \begin{figure}
 \centering
@@ -304,10 +356,9 @@ NA\strut
 \caption{Plot of the collected data by latitude and longitude}
 \end{figure}
 
-From the plot we can see that there are two points at one location, and
-several points at a second locations. Overall the variation in GCC is
-between 0.5 and 0.7. Some of the points are so close together that they
-are simply overlapping.
+From the plot we can see that collected points are scattered across the
+area. Overall the variation in GCC is between 0.5 and 0.7. Some of the
+points are so close together that they are simply overlapping.
 
 \section{Discussion and conclusions}\label{discussion-and-conclusions}
 
@@ -316,13 +367,13 @@ offers new opportunities to make data and research available to the
 wider public. Rmarkdown in combination with the package \texttt{rticles}
 allows for efficient recording of workflows and paper writing.
 
-This paper has demonstrated that using existing tools it is fairly
-simple to produce a draft paper that includes the overall workflow
-within the document.
-
-It also demonstrates that using mobile phone photography it is easy to
-collect a large amount of data using inexperienced (citizen science)
+This paper demonstrates that using mobile phone photography it is easy
+to collect a large amount of data using inexperienced (citizen science)
 type data collection and to quickly summarize this data.
+
+It has also demonstrated that using existing tools it is fairly simple
+to produce a draft paper that includes the overall workflow within the
+document.
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}

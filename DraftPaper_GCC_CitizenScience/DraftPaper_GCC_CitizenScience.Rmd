@@ -1,31 +1,31 @@
 ---
-title: Draft paper on collecting vegetation indices using citizen science
+title: Draft paper demo vegetation indices
 author:
   - name: R. Willem Vervoort
     email: willem.vervoort@sydney.edu.au
     affiliation: a
     footnote: Corresponding Author
   - name: Dasapta Erwin Irawan
-    email: dasaptaerwin@gmail.com
+    email: dasaptaerwin@gmail.com 
     affiliation: b
   - name: Gene Melzack
-    email: gene.melzack@sydney.edu.au
+    email: gene.melzack@sydney.edu.au 
     affiliation: c
 address:
   - code: a
-    address: The University of Sydney, Department, Street, City, State, Zip
+    address: Sydney Institute of Agriculture, The University of Sydney, NSW 2006
   - code: b
-    address: ITB, Department, Street, City, State, Zip
+    address: Applied Geology Research Group, Faculty of Earth Sciences and Technology, Institut Teknologi Bandung, Jl. Ganesa No.10, Lb. Siliwangi, Coblong, Kota Bandung, Jawa Barat 40132, Indonesia
   - code: c
-    address: The University of Sydney Library, Department, Street, City, State, Zip
+    address: Research Data Team, The University of Sydney Library, The University of Sydney, NSW 2006
 abstract: |
   Understanding the spatial and temporal variation in primary production can identify variation in ecological response related to climate and landscape. With mobile phone cameras now easily available, this opens an opportunity to use citizen science to record primary production from vegetation images. 
 
-  The objective of this study is to demonstrate how mobile phone images can be quickly analysed for primary production and can give inside in spatial variation of ecological response.
+  This study demonstrates how mobile phone images can be quickly analysed for primary production and can give inside in spatial variation of ecological response.
   
-  Participants in an open data workshop took mobile phone imagery of local vegetation and the resulting images were stored in an open data project folder. The images were analysed and used to quantify vegetation indices of primary production, which was plotted in space.
+  Participants in an open data workshop took mobile phone imagery of local vegetation and the resulting images were stored in an open data project folder. The analysis calculated he ratio of the green channel and the sum of the red and blue channel from mobile phone images of vegetation.  
   
-  The results indicate a wide variation of vegetation indices, even across a small area. The process of taking images, uploading, sharing and analysis was rapid using basic open data science tools.
+  The results rapid mapping of vegetation vigour and a wide variety across a small area. The process of taking images, uploading, sharing and analysis was rapid using basic open data science tools including the package `rticles`.
   
   Mobile phones can be used by inexperienced operators to quickly map vegetation indices in an area.
 
@@ -43,7 +43,7 @@ During the workshop, an example dataset was used based on older research [@vervo
 
 There is considerable interest globally in remotely mapping vegetation due to its strong relationship with ecosystem health and variation in drivers of vegetation productivity [@huete_modis_2011; @rohde_global_2017]. Ratios of colour bands in vegetation photographs have been shown to be highly correlated to gross primary production [@moore_treegrass_2017], and this therefore creates opportunities for rapid local mapping of vegetation growth and condition. 
 
-The objective of this paper is to demonstrate how the collected data can be easily summarised and a draft paper written using Rmarkdown and the package `rticles`.
+The objective of this paper is to demonstrate how data can be rapidly collected using mobile phones and the collected data can be easily summarised and a draft paper written using Rmarkdown and the package `rticles`.
 
 Methods
 ==========
@@ -58,11 +58,7 @@ Metadata were extracted from the photos using the exif program, using the R pack
 
 Using the package `imager` in R, the image colour bands were extracted from the photos and following @moore_treegrass_2017 the ratio (GCC) of the green band (G) over the sum of the red (R) and blue (B) bands was calculated:
 
-/begin{equation}
-  GCC = /frac{G}{(R + B)}
-    /label{eqn:model}
-/end{equation}
- 
+$GCC = \frac{G}{(R + B)}$
 
 Results
 ==========
@@ -88,13 +84,13 @@ Using Rmarkdown, we can run all the analysis in the background and not show this
 ```{r generate, echo=F}
 
 files <- list.files(path = "FieldDataDay4", 
-                    pattern = "*.jpg")
+                    pattern = "*.j")
 dat <- read_exif(path = paste("FieldDataDay4/",
-                              files[1:10],sep=""))
+                              files,sep=""))
 
-Store <- rep(0,length(files[1:10]))
+Store <- rep(0,length(files))
 
-for (i in 1:length(files[1:10])) {
+for (i in 1:length(files)) {
   our_image <- 
     load.image(paste("FieldDataDay4/",
                               files[i],sep=""))
@@ -124,20 +120,23 @@ plotdat <- data.frame(Latitude = dat$GPSLatitude,
 As a first result we can show a table of the result with the associated latitudes and longitudes. This can easily be done using `pander` which creates nice tables. This shows that there is quite a range of variability in the data.
 
 
-```{r showtable, echo =F, message = F}
+```{r showtable, echo =F, message = F, warning=F}
 require(pander)
-pander(plotdat, caption="Table 1 Overview of first 10 collected data and GCC values")
+pander(na.omit(plotdat[1:15,]), caption="Table 1 Overview of first 15 collected data points and GCC values for which Latitude and Longitude data are available")
 ```
 
+Some data are not shown, as people did not have their location available on the mobile phone and this means there is no latitude and longitude metadata. This are `r nrow(plotdat) - nrow(na.omit(plotdat))` data points with missing data.
+
+The average **GCC** value for all data is `r round(mean(plotdat$GCC),2)`, while for the data set that does not include the data with missing location data, the average **GCC** value is `r round(mean(na.omit(plotdat)$GCC),2)`. This suggests that there is little effect of omitting the data.
 
 ```{r plot_data, echo=F, fig.cap =  "Plot of the collected data by latitude and longitude"}
 # now plot values of Store
-p <- ggplot(plotdat, aes(x=Longitude, y = Latitude)) +
+p <- ggplot(na.omit(plotdat), aes(x=Longitude, y = Latitude)) +
   geom_point(aes(colour=GCC, size=GCC), alpha = 0.4)
 p
 ```
 
-From the plot we can see that there are two points at one location, and several points at a second locations. Overall the variation in GCC is between 0.5 and 0.7. Some of the points are so close together that they are simply overlapping.
+From the plot we can see that collected points are scattered across the area. Overall the variation in GCC is between 0.5 and 0.7. Some of the points are so close together that they are simply overlapping.
 
 
 Discussion and conclusions
@@ -145,9 +144,9 @@ Discussion and conclusions
 
 While there are many different ways to publish research. Open Science offers new opportunities to make data and research available to the wider public. Rmarkdown in combination with the package `rticles` allows for efficient recording of workflows and paper writing.
 
-This paper has demonstrated that using existing tools it is fairly simple to produce a draft paper that includes the overall workflow within the document.
+This paper demonstrates that using mobile phone photography it is easy to collect a large amount of data using inexperienced (citizen science) type data collection and to quickly summarize this data.
 
-It also demonstrates that using mobile phone photography it is easy to collect a large amount of data using inexperienced (citizen science) type data collection and to quickly summarize this data.
+It has  also demonstrated that using existing tools it is fairly simple to produce a draft paper that includes the overall workflow within the document.
 
 
 References {#references .unnumbered}
